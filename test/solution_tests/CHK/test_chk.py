@@ -1,3 +1,5 @@
+import unittest.mock
+
 import pytest
 
 from solutions.CHK import checkout_solution
@@ -95,4 +97,12 @@ class TestCheckout():
             + 3 * 23  # price for z (no offers)
         )
         assert service.get_basket_price(basket_str) == expected
+
+    def test_checkout(self):
+        with unittest.mock.patch.object(
+            CheckoutService, "get_basket_price",
+        ) as mock:
+            checkout_solution.checkout("xyz")
+        mock.assert_called_with("xyz")
+
 
