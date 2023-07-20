@@ -17,7 +17,25 @@ class CheckoutService:
     def __init__(self) -> None:
         pass
 
-    def get_price(self, sku: str, quantity: int) -> int:
+    def get_item_price(self, sku: str, quantity: int) -> int:
         """
         Return the price for `quantity` number of items defined by `sku`.
         """
+        result = 0
+        try:
+            price = self.prices[sku]
+        except KeyError:
+            raise ValueError(f"invalid SKU: {repr(sku)}")
+
+        try:
+            offer = self.offers[sku]
+        except KeyError:
+            pass
+        else:
+            result += (quantity // offer[0]) * offer[1]
+            quantity %= offer[0]
+
+        result += quantity * price
+
+        return result
+
