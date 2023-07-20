@@ -77,13 +77,21 @@ class TestCheckout():
 
     def test_checkout_basket_price_mixed_skus(self):
         service = CheckoutService()
+
+        # Basket: 7 of each
+        basket_str = 7 * "xyz"
         expected = (
             1 * 63 + 2 * 17  # price for x
             + 7 * 19  # price for y (offer requirement not reached)
             + 7 * 23  # price for z (no offers)
         )
-        assert service.get_basket_price(7 * "xyz") == expected
+        assert service.get_basket_price(basket_str) == expected
 
-
-
-
+        # Basket: 13 x, 17 y, 3 z
+        basket_str = "yyyxxyzyxyxyyyxyyyxxzxxyyyxxyyzxx"
+        expected = (
+            2 * 63 + 3 * 17  # price for x (2 offers of 5 items + 3 remaining)
+            + 1 * 191 + 2 * 19  # price for y (1 offer of 11 items + 2 remain.)
+            + 3 * 23  # price for z (no offers)
+        )
+        assert service.get_basket_price(basket_str) == expected
