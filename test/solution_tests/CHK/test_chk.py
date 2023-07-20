@@ -124,9 +124,11 @@ class TestCheckout2():
         cls.bak_prices = CheckoutService.prices
         cls.bak_offers = CheckoutService.offers
         cls.bak_free_items = CheckoutService.free_items
-        CheckoutService.prices = {"A": 50, "B": 30, "C": 20, "D": 15, "E": 40}
+        CheckoutService.prices = {
+            "A": 50, "B": 30, "C": 20, "D": 15, "E": 40, "F": 10,
+        }
         CheckoutService.offers = {"A": {5: 200, 7: 270}, "B": {2: 45}}
-        CheckoutService.free_items = {"E": (2, "B")}
+        CheckoutService.free_items = {"E": (2, "B"), "F": (2, "F")}
 
     @classmethod
     def teardown_class(cls):
@@ -142,7 +144,6 @@ class TestCheckout2():
         assert service.get_basket_price(10 * "A") == 400
 
     def test_checkout_basket_with_free_stuff(self):
-        # Test two offers from docstring examples in
         service = CheckoutService()
 
         # Nothing is free (because B is not in the basket).
@@ -172,4 +173,25 @@ class TestCheckout2():
         # One B is free, two of the remaining ones go at a discounted price,
         # while the fourth one and E go at full price.
         assert service.get_basket_price("BBBBEE") == 1 * 45 + 1 * 30 + 2 * 40
+
+    def test_checkout_basket_with_same_item_being_free(self):
+        service = CheckoutService()
+
+        # Nothing is free (because there are only two of F, and we need 3).
+        assert service.get_basket_price("FF") == 2 * 10
+
+        # Two items F go at full price, while the third one is free.
+        assert service.get_basket_price("FFF") == 2 * 10
+
+        # Two items F give one for free and the remaining one is at full price
+        # (so, 3 at full price, 1 for free).
+        assert service.get_basket_price("FFFF") == 3 * 10
+
+        # Two items F give one for free and the remaining two are at full price
+        # (so, 4 at full price, 1 for free).
+        assert service.get_basket_price("FFFFF") == 4 * 10
+
+        # Four items F give two for free, while the remaining two are free.
+        assert service.get_basket_price("FFFFFF") == 4 * 10
+
 
