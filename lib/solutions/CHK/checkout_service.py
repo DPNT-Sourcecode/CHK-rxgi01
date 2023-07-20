@@ -86,16 +86,19 @@ class CheckoutService:
 
         # Apply max. of each discount, in all possible orderings.
         for discount_counts in itertools.permutations(sku_offers):
+            print(">", discount_counts)
             total_price = 0
             remaining_quantity = quantity
             for discount_cnt in discount_counts:
                 discount_quantity = remaining_quantity // discount_cnt
+                print(">>", discount_quantity)
                 if discount_quantity:
                     total_price += discount_quantity * sku_offers[discount_cnt]
                     remaining_quantity -= discount_cnt * discount_quantity
                     if not remaining_quantity:
                         break
             total_price += remaining_quantity * price
+            print(">>", total_price)
             if total_price < result:
                 result = total_price
 
@@ -133,5 +136,6 @@ class CheckoutService:
             )
         except ValueError:
             return -1
+
 
 
