@@ -13,7 +13,7 @@ class TestCheckout():
         cls.bak_prices = CheckoutService.prices
         cls.bak_offers = CheckoutService.offers
         CheckoutService.prices = {"x": 17, "y": 19, "z": 23}
-        CheckoutService.offers = {"x": (5, 63), "y": (11, 191)}
+        CheckoutService.offers = {"x": {5: 63}, "y": {11: 191}}
 
     @classmethod
     def teardown_class(cls):
