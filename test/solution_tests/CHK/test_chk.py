@@ -193,3 +193,30 @@ class TestCheckout2():
 
         # Four items F give two for free, while the remaining two are free.
         assert service.get_basket_price("FFFFFF") == 4 * 10
+
+
+class TestCheckout3():
+    """
+    Testing groups on "live" data.
+
+    In real life, one would craft test data for this, but a wise man once said:
+    > I'm Tired, Boss.  
+    > -- John Coffey, 1999.
+
+    So, I'll just go with the "live" data.
+    """  # noqa: W291
+
+    def test_checkout_basket_with_too_few_grouped_items(self):
+        service = CheckoutService()
+
+        assert service.get_basket_price("ST") == 20 + 20
+        assert service.get_basket_price("XZ") == 17 + 21
+        assert service.get_basket_price("XX") == 2 * 17
+
+    def test_checkout_basket_with_enough_grouped_items(self):
+        service = CheckoutService()
+
+        assert service.get_basket_price("STX") == 45
+        assert service.get_basket_price("XXXX") == 45 + 17
+        assert service.get_basket_price("YXZXXZ") == 2 * 45
+

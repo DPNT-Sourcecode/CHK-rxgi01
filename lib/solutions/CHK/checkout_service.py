@@ -136,6 +136,7 @@ class CheckoutService:
                 item_cnt = sku2quant.get(sku, 0)
                 discount_cnt = min(remaining_cnt, item_cnt)
                 if discount_cnt:
+                    print(">", sku, remaining_cnt, discount_cnt, sku2quant)
                     remaining_cnt -= discount_cnt
                     item_cnt -= discount_cnt
                     result += discount_cnt * group_price
@@ -232,6 +233,7 @@ class CheckoutService:
             )
         except ValueError:
             return -1
+
 
 
 
