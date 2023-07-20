@@ -51,13 +51,14 @@ class CheckoutService:
         :return: The price of the basked with given SKUs, or -1 if some SKU is
             invalid (i.e., it does not exist in service's `prices` dictionary).
         """
-        basket: dict[str, int] = dict()
+        sku2quant: dict[str, int] = dict()
         for sku in re.sub(r"[^a-z]", "", basket, flags=re.I):
-            basket[sku] = basket.get(sku, 0) + 1
+            sku2quant[sku] = sku2quant.get(sku, 0) + 1
         try:
             return sum(
                 self.get_item_price(sku, quantity)
-                for sku, quantity in basket.items()
+                for sku, quantity in sku2quant.items()
             )
         except ValueError:
             return -1
+

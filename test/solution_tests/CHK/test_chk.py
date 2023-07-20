@@ -40,3 +40,28 @@ class TestCheckout():
         service = CheckoutService()
         assert service.get_item_price("z", 1719) == 1719 * 23
 
+    def test_checkout_basket_price_simple(self):
+        service = CheckoutService()
+        assert service.get_basket_price("x") == 17
+
+    def test_checkout_basket_price_multi(self):
+        service = CheckoutService()
+        assert service.get_basket_price(3 * "x") == 3 * 17
+
+    def test_checkout_basket_price_offer(self):
+        service = CheckoutService()
+        assert service.get_basket_price(5 * "x") == 63
+
+    def test_checkout_basket_price_beyond_offer(self):
+        service = CheckoutService()
+        assert service.get_basket_price(7 * "x") == 63 + 2 * 17
+
+    def test_checkout_basket_price_beyond_multiple_offers(self):
+        service = CheckoutService()
+        assert service.get_basket_price((3 * 5 + 2) * "x") == 3 * 63 + 2 * 17
+
+    def test_checkout_basket_price_no_offers(self):
+        service = CheckoutService()
+        assert service.get_basket_price(1719 * "z") == 1719 * 23
+
+
