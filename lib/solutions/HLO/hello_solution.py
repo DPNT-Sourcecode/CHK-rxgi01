@@ -12,4 +12,3 @@ def hello(friend_name: Any) -> str:
     Return a "Hello World" message.
     """
     return "Hello, World!"
-
