@@ -57,7 +57,7 @@ class CheckoutService:
                     # TODO: Add extra free items to the basket?
                     sku2quant.pop(free_sku, None)
 
-    def get_best_price(
+    def _get_best_price(
         self, price: int, quantity: int, sku_offers: sku_offersT,
     ) -> int:
         """
@@ -111,7 +111,7 @@ class CheckoutService:
             raise ValueError(f"invalid SKU: {repr(sku)}")
 
         sku_offers = self.offers.get(sku, dict())
-        return self.get_best_price(price, quantity, sku_offers)
+        return self._get_best_price(price, quantity, sku_offers)
 
     def get_basket_price(self, basket: str) -> int:
         """
@@ -133,4 +133,5 @@ class CheckoutService:
             )
         except ValueError:
             return -1
+
 
