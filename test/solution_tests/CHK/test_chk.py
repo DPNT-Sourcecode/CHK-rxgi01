@@ -141,4 +141,25 @@ class TestCheckout2():
         assert service.get_basket_price(7 * "A") == 270
         assert service.get_basket_price(10 * "A") == 400
 
+    def test_checkout_basket_with_free_stuff(self):
+        # Test two offers from docstring examples in
+        service = CheckoutService()
+
+        # Nothing is free (because B is not in the basket).
+        assert service.get_basket_price("EE") == 2 * 40
+
+        # Nothing is free (because we don't have enough of E in the basket).
+        assert service.get_basket_price("BE") == 1 * 30 + 1 * 40
+
+        # B is free, E is charged at full price.
+        assert service.get_basket_price("BEE") == 0 * 30 + 2 * 40
+
+        # B is free, E is charged at full price.
+        assert service.get_basket_price("BEEE") == 0 * 30 + 3 * 40
+
+        # B is free, but only once (could be twice, but we don't have two of
+        # B), E is charged at full price.
+        assert service.get_basket_price("BEEEE") == 0 * 30 + 4 * 40
+
+
 
