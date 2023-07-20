@@ -16,5 +16,3 @@ def checkout(skus: str) -> int:
     """
     service = CheckoutService()
     return service.get_basket_price(skus)
-
-

@@ -108,6 +108,3 @@ class TestCheckout():
         ) as mock:
             checkout_solution.checkout("xyz")
         mock.assert_called_with("xyz")
-
-
-
