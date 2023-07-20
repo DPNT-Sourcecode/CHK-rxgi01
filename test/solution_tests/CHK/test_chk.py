@@ -160,3 +160,16 @@ class TestCheckout2():
         # B is free, but only once (could be twice, but we don't have two of
         # B), E is charged at full price.
         assert service.get_basket_price("BEEEE") == 0 * 30 + 4 * 40
+
+        # One B is free, but the other one isn't (we only have two of E), E is
+        # charged at full price.
+        assert service.get_basket_price("BBEE") == 1 * 30 + 2 * 40
+
+        # One B is free, and the remaining two go at a discounted price, while
+        # E is charged at full price.
+        assert service.get_basket_price("BBBEE") == 1 * 45 + 2 * 40
+
+        # One B is free, two of the remaining ones go at a discounted price,
+        # while the fourth one and E go at full price.
+        assert service.get_basket_price("BBBBEE") == 1 * 45 + 1 * 30 + 2 * 40
+
