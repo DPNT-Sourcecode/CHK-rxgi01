@@ -32,7 +32,7 @@ class CheckoutService:
         "B": {2: 45},
         "H": {5: 45, 10: 80},
         "K": {2: 150},
-        "P": {5, 200},
+        "P": {5: 200},
         "Q": {3: 80},
         "V": {2: 90, 3: 130},
     }
@@ -40,6 +40,7 @@ class CheckoutService:
         "E": (2, "B"),
         "F": (2, "F"),
         "N": (3, "M"),
+        "R": (3, "Q"),
         "U": (3, "U"),
     }
 
@@ -161,3 +162,4 @@ class CheckoutService:
             )
         except ValueError:
             return -1
+
