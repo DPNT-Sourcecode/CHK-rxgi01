@@ -92,7 +92,7 @@ class CheckoutService:
                 discount_quantity = remaining_quantity // discount_cnt
                 if discount_quantity:
                     total_price += discount_quantity * sku_offers[discount_cnt]
-                    remaining_quantity -= discount_quantity
+                    remaining_quantity -= discount_cnt * discount_quantity
                     if not remaining_quantity:
                         break
             total_price += remaining_quantity * price
@@ -133,3 +133,4 @@ class CheckoutService:
             )
         except ValueError:
             return -1
+
