@@ -1,3 +1,5 @@
+import pytest
+
 from solutions.CHK import checkout_solution
 from solutions.CHK.checkout_service import CheckoutService
 
@@ -40,6 +42,11 @@ class TestCheckout():
         service = CheckoutService()
         assert service.get_item_price("z", 1719) == 1719 * 23
 
+    def test_checkout_item_price_invalid_sku(self):
+        service = CheckoutService()
+        with pytest.raises(ValueError):
+            service.get_item_price("WRONG", 1719)
+
     def test_checkout_basket_price_simple(self):
         service = CheckoutService()
         assert service.get_basket_price("x") == 17
@@ -63,5 +70,10 @@ class TestCheckout():
     def test_checkout_basket_price_no_offers(self):
         service = CheckoutService()
         assert service.get_basket_price(1719 * "z") == 1719 * 23
+
+    def test_checkout_basket_price_invalid_sku(self):
+        service = CheckoutService()
+        assert service.get_basket_price("xEx") == -1
+
 
 
