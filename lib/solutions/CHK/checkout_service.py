@@ -20,10 +20,12 @@ class CheckoutService:
 
     # We'll normally want these in a DB or some file.
     # Prices: SKU -> price
-    prices: sku_pricesT = {"A": 50, "B": 30, "C": 20, "D": 15, "E": 40}
+    prices: sku_pricesT = {
+        "A": 50, "B": 30, "C": 20, "D": 15, "E": 40, "F": 10,
+    }
     # Offers: SKU -> {quantity -> price_for_that_quantity}
     offers: offersT = {"A": {3: 130, 5: 200}, "B": {2: 45}}
-    free_items: free_itemsT = {"E": (2, "B")}
+    free_items: free_itemsT = {"E": (2, "B"), "F": (2, "F")}
 
     def __init__(self) -> None:
         pass
@@ -50,6 +52,8 @@ class CheckoutService:
             except KeyError:
                 pass
             else:
+                if free_sku == sku:
+                    free_quantity += 1
                 free_item_quant = sku2quant.get(free_sku, 0)
                 free_item_quant -= quantity // free_quantity
                 if free_item_quant > 0:
@@ -141,3 +145,4 @@ class CheckoutService:
             )
         except ValueError:
             return -1
+
