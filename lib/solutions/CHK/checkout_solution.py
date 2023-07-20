@@ -2,6 +2,8 @@
 Solution for the `CHK` challenge.
 """
 
+from .checkout_service import CheckoutService
+
 
 # noinspection PyUnusedLocal
 # skus = unicode string
@@ -14,4 +16,5 @@ def checkout(skus: str) -> int:
     """
     service = CheckoutService()
     return service.get_basket_price(skus)
+
 
