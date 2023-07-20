@@ -2,13 +2,12 @@
 Solution for the `HLO` challenge.
 """
 
-from typing import Any
-
 
 # noinspection PyUnusedLocal
 # friend_name = unicode string
-def hello(friend_name: Any) -> str:
+def hello(friend_name: str) -> str:
     """
-    Return a "Hello World" message.
+    Return a hello message for a person named `friend_name`.
     """
-    return "Hello, World!"
+    return f"Hello, {friend_name}!"
+
