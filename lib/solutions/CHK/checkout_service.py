@@ -125,7 +125,7 @@ class CheckoutService:
             # Take away discounted items (weirdly enough, most expensive
             # first).
             for sku, _ in sorted(
-                self.prices.items(), key=lambda it: it[1], reversed=True,
+                self.prices.items(), key=lambda it: it[1], reverse=True,
             ):
                 if sku not in group:
                     continue
@@ -220,6 +220,7 @@ class CheckoutService:
         for sku in basket:
             sku2quant[sku] = sku2quant.get(sku, 0) + 1
         self._apply_free(sku2quant)
+        self._apply_groups(sku2quant)
         try:
             return sum(
                 self.get_item_price(sku, quantity)
@@ -227,4 +228,5 @@ class CheckoutService:
             )
         except ValueError:
             return -1
+
 
