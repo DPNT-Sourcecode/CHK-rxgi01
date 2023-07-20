@@ -102,11 +102,15 @@ class CheckoutService:
           items, but we have `m * k + r` for some `r` such that `0 < r < k`).
 
         * Extra mess with free items (does 2E give B if it is also applying for
-          a group discount? usually not, but it's undefined here).
+          a group discount? Usually not, but it's undefined here).
 
         The data does not require this, so we're not doing it, while also
         praying to the elder gods to strike Marketing with a lightning bolt if
         the consider adding such offers.
+
+        We're also not accounting for the case when a group is more expensive
+        than buying one or more of the items in it individually. Yes, we trust
+        Marketing here. Shame on us.
         """
         result = 0
 
@@ -228,5 +232,6 @@ class CheckoutService:
             )
         except ValueError:
             return -1
+
 
 
