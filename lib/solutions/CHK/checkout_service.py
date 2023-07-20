@@ -162,4 +162,3 @@ class CheckoutService:
             )
         except ValueError:
             return -1
-
