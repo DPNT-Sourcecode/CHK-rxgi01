@@ -193,5 +193,3 @@ class TestCheckout2():
 
         # Four items F give two for free, while the remaining two are free.
         assert service.get_basket_price("FFFFFF") == 4 * 10
-
-
