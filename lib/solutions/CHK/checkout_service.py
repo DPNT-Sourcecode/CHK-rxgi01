@@ -11,6 +11,7 @@ sku2quantT: TypeAlias = dict[str, int]
 sku_offersT: TypeAlias = dict[int, int]
 offersT: TypeAlias = dict[str, sku_offersT]
 free_itemsT: TypeAlias = dict[str, tuple[int, str]]
+groupsT: TypeAlias = dict[str, tuple[int, int]]
 
 
 class CheckoutService:
@@ -22,16 +23,16 @@ class CheckoutService:
     # Prices: SKU -> price
     prices: sku_pricesT = {
         "A": 50, "B": 30, "C": 20, "D": 15, "E": 40, "F": 10, "G": 20, "H": 10,
-        "I": 35, "J": 60, "K": 80, "L": 90, "M": 15, "N": 40, "O": 10, "P": 50,
-        "Q": 30, "R": 50, "S": 30, "T": 20, "U": 40, "V": 50, "W": 20, "X": 90,
-        "Y": 10, "Z": 50,
+        "I": 35, "J": 60, "K": 70, "L": 90, "M": 15, "N": 40, "O": 10, "P": 50,
+        "Q": 30, "R": 50, "S": 20, "T": 20, "U": 40, "V": 50, "W": 20, "X": 17,
+        "Y": 20, "Z": 21,
     }
     # Offers: SKU -> {quantity -> price_for_that_quantity}
     offers: offersT = {
         "A": {3: 130, 5: 200},
         "B": {2: 45},
         "H": {5: 45, 10: 80},
-        "K": {2: 150},
+        "K": {2: 120},
         "P": {5: 200},
         "Q": {3: 80},
         "V": {2: 90, 3: 130},
@@ -42,6 +43,9 @@ class CheckoutService:
         "N": (3, "M"),
         "R": (3, "Q"),
         "U": (3, "U"),
+    }
+    groups: groupsT = {
+        "STXYZ": (3, 45),
     }
 
     def __init__(self) -> None:
@@ -81,6 +85,67 @@ class CheckoutService:
 
         for remove_sku in remove_skus:
             sku2quant.pop(remove_sku, None)
+
+    def _apply_groups(self, sku2quant: sku2quantT) -> int:
+        """
+        Update `sku2quant` by applying group prices and return their price.
+
+        We assume that group offers are better than the individual ones, i.e.,
+        that applying group takes priority. Not assuming so would introduce
+        some serious problems:
+
+        * It would complicate the code and require a significant refactor, as
+          we could no longer compute the prices for individual items.
+
+        * The ambiguity of which items to leave outside of the groups when the
+          groups don't encompass all of them (the group discount comes at `k`
+          items, but we have `m * k + r` for some `r` such that `0 < r < k`).
+
+        * Extra mess with free items (does 2E give B if it is also applying for
+          a group discount? usually not, but it's undefined here).
+
+        The data does not require this, so we're not doing it, while also
+        praying to the elder gods to strike Marketing with a lightning bolt if
+        the consider adding such offers.
+        """
+        result = 0
+
+        for group, (group_cnt, group_price) in self.groups.items():
+            remove_skus: set[str] = set()
+            total_cnt = sum(
+                sku_quant
+                for sku, sku_quant in sku2quant.items()
+                if sku in group
+            )
+            remaining_cnt = total_cnt // group_cnt
+            if not remaining_cnt:
+                # Not enough for a discount.
+                continue
+
+            # Take away discounted items (weirdly enough, most expensive
+            # first).
+            for sku, _ in sorted(
+                self.prices.items(), key=lambda it: it[1], reversed=True,
+            ):
+                if sku not in group:
+                    continue
+                item_cnt = sku2quant.get(sku, 0)
+                discount_cnt = min(remaining_cnt, item_cnt)
+                if discount_cnt:
+                    remaining_cnt -= discount_cnt
+                    item_cnt -= discount_cnt
+                    result += discount_cnt * group_price
+                    if item_cnt:
+                        sku2quant[sku] = item_cnt
+                    else:
+                        remove_skus.add(sku)
+                    if not remaining_cnt:
+                        break
+
+            for remove_sku in remove_skus:
+                sku2quant.pop(remove_sku, None)
+
+        return result
 
     def _get_best_price(
         self, price: int, quantity: int, sku_offers: sku_offersT,
@@ -162,3 +227,4 @@ class CheckoutService:
             )
         except ValueError:
             return -1
+
