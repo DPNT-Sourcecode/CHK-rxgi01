@@ -115,16 +115,17 @@ class TestCheckout2():
 
     @classmethod
     def setup_class(cls):
-        # Let's use values from the example, to simplify searching for proper
-        # examples. This whole class would normally be a rework of the above,
-        # but that would include crafting test data for all cases, and it's
-        # easier to just have a completely new one without the need to "fix"
-        # the expected results above.
+        # Let's use values from the example in CheckoutService._get_best_price
+        # to catch some cases that the original data misses.
+        # This whole class would normally be a rework of the above, but that
+        # would include crafting test data for all cases, and it's easier to
+        # just have a completely new one without the need to "fix" the expected
+        # results above.
         cls.bak_prices = CheckoutService.prices
         cls.bak_offers = CheckoutService.offers
         cls.bak_free_items = CheckoutService.free_items
         CheckoutService.prices = {"A": 50, "B": 30, "C": 20, "D": 15, "E": 40}
-        CheckoutService.offers = {"A": {3: 130, 5: 200}, "B": {2: 45}}
+        CheckoutService.offers = {"A": {5: 200, 7: 270}, "B": {2: 45}}
         CheckoutService.free_items = {"E": (2, "B")}
 
     @classmethod
@@ -135,9 +136,9 @@ class TestCheckout2():
 
     def test_checkout_basket_with_competing_offers(self):
         # Test two offers from docstring examples in
-        # CheckoutService._get_best_price.
         service = CheckoutService()
 
-        assert service.get_basket_price(6 * "A") == 250
-        assert service.get_basket_price(9 * "A") == 390
+        assert service.get_basket_price(7 * "A") == 270
+        assert service.get_basket_price(10 * "A") == 400
+
 

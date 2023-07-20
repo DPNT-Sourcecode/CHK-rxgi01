@@ -64,13 +64,16 @@ class CheckoutService:
         Return the optimal price for the given quantity of items.
 
         Note that it is not always directly clear which discounts to apply. For
-        example,
+        example, let's say that we can get 5A for 200 or 7A for 270.
 
-        * 6A can be 2 * 3A = 260 or 1 * 5A + A = 250, implying that we might
-          prefer larger offers;
+        * 7A can be 1 * 5A + 2 * A = 300 or 1 * 7A = 270, implying that we
+          might prefer larger offers;
 
-        * 9A can be 3 * 3A = 390 or 1 * 5A + 4 * A = 400, implying greedy
-          approach.
+        * 10A can be 2 * 5A = 400 or 1 * 7A + 3 * A = 420, implying that we
+          might prefer smaller offers.
+
+        Further, in real world, offers don't always make sense ("buy 3" can be
+        more expensive than buying 3 separate items).
 
         Since baskets are usually small and offers rarely very plentiful, we'll
         just try all possibilities and optimise later on if needed.
@@ -84,26 +87,20 @@ class CheckoutService:
         if not sku_offers:
             return result
 
-        print(price, quantity)
         # Apply max. of each discount, in all possible orderings.
         for discount_counts in itertools.permutations(sku_offers):
-            print(">", discount_counts)
             total_price = 0
             remaining_quantity = quantity
             for discount_cnt in discount_counts:
                 discount_quantity = remaining_quantity // discount_cnt
-                print(">>", discount_cnt, discount_quantity)
                 if discount_quantity:
                     total_price += discount_quantity * sku_offers[discount_cnt]
                     remaining_quantity -= discount_cnt * discount_quantity
                     if not remaining_quantity:
                         break
             total_price += remaining_quantity * price
-            print(">>", total_price)
             if total_price < result:
                 result = total_price
-
-        print()
 
         return result
 
@@ -139,6 +136,7 @@ class CheckoutService:
             )
         except ValueError:
             return -1
+
 
 
 
