@@ -75,5 +75,15 @@ class TestCheckout():
         service = CheckoutService()
         assert service.get_basket_price("xEx") == -1
 
+    def test_checkout_basket_price_mixed_skus(self):
+        service = CheckoutService()
+        expected = (
+            1 * 63 + 2 * 17  # price for x
+            + 7 * 19  # price for y (offer requirement not reached)
+            + 7 * 23  # price for z (no offers)
+        )
+        assert service.get_basket_price(7 * "xyz") == expected
+
+
 
 
