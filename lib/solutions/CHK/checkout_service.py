@@ -2,8 +2,6 @@
 Service for handling checkouts.
 """
 
-import re
-
 
 class CheckoutService:
     """
@@ -45,14 +43,14 @@ class CheckoutService:
         """
         Return the price of the given basket or -1 if invalid.
 
-        :param basked: A string containing SKUs. Non-characters (like spaces
-            and commas are ignored), but the letters are considered
-            case-sensitive, as is common practice with SKUs.
+        :param basked: A string containing SKUs.
         :return: The price of the basked with given SKUs, or -1 if some SKU is
             invalid (i.e., it does not exist in service's `prices` dictionary).
         """
         sku2quant: dict[str, int] = dict()
-        for sku in re.sub(r"[^a-z]", "", basket, flags=re.I):
+        # Note: wrong specs. It said that SKUs are "individual letters of the
+        # alphabet".
+        for sku in basket:
             sku2quant[sku] = sku2quant.get(sku, 0) + 1
         try:
             return sum(
@@ -61,3 +59,4 @@ class CheckoutService:
             )
         except ValueError:
             return -1
+

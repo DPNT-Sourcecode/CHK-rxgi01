@@ -77,6 +77,10 @@ class TestCheckout():
         service = CheckoutService()
         assert service.get_basket_price("xEx") == -1
 
+    def test_checkout_basket_price_empty(self):
+        service = CheckoutService()
+        assert service.get_basket_price("") == 0
+
     def test_checkout_basket_price_mixed_skus(self):
         service = CheckoutService()
 
@@ -104,5 +108,6 @@ class TestCheckout():
         ) as mock:
             checkout_solution.checkout("xyz")
         mock.assert_called_with("xyz")
+
 
 
