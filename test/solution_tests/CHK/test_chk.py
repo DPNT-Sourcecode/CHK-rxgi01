@@ -160,6 +160,3 @@ class TestCheckout2():
         # B is free, but only once (could be twice, but we don't have two of
         # B), E is charged at full price.
         assert service.get_basket_price("BEEEE") == 0 * 30 + 4 * 40
-
-
-

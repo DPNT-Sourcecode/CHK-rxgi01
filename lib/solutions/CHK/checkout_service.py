@@ -43,6 +43,7 @@ class CheckoutService:
         Therefore, we assume that such conflicts do not exist, as "offers are
         well balanced so that they can be safely combined".
         """
+        remove_skus: set[str] = set()
         for sku, quantity in sku2quant.items():
             try:
                 free_quantity, free_sku = self.free_items[sku]
@@ -55,7 +56,10 @@ class CheckoutService:
                     sku2quant[free_sku] = free_item_quant
                 else:
                     # TODO: Add extra free items to the basket?
-                    sku2quant.pop(free_sku, None)
+                    remove_skus.add(free_sku)
+
+        for remove_sku in remove_skus:
+            sku2quant.pop(remove_sku, None)
 
     def _get_best_price(
         self, price: int, quantity: int, sku_offers: sku_offersT,
@@ -129,6 +133,7 @@ class CheckoutService:
         # alphabet".
         for sku in basket:
             sku2quant[sku] = sku2quant.get(sku, 0) + 1
+        self._apply_free(sku2quant)
         try:
             return sum(
                 self.get_item_price(sku, quantity)
@@ -136,8 +141,3 @@ class CheckoutService:
             )
         except ValueError:
             return -1
-
-
-
-
-
