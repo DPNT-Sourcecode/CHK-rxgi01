@@ -219,4 +219,3 @@ class TestCheckout3():
         assert service.get_basket_price("STX") == 45
         assert service.get_basket_price("XXXX") == 45 + 17
         assert service.get_basket_price("YXZXXZ") == 2 * 45
-

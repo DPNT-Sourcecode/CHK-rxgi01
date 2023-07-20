@@ -136,7 +136,7 @@ class CheckoutService:
                 item_cnt = sku2quant.get(sku, 0)
                 discount_cnt = min(remaining_cnt, item_cnt)
                 if discount_cnt:
-                    print(">", sku, remaining_cnt, discount_cnt, sku2quant)
+                    print(">", sku, remaining_cnt, discount_cnt, sku2quant, result)
                     remaining_cnt -= discount_cnt
                     item_cnt -= discount_cnt
                     result += discount_cnt * group_price
@@ -144,6 +144,7 @@ class CheckoutService:
                         sku2quant[sku] = item_cnt
                     else:
                         remove_skus.add(sku)
+                    print(">>", remaining_cnt, discount_cnt, sku2quant, result)
                     if not remaining_cnt:
                         break
 
@@ -225,15 +226,13 @@ class CheckoutService:
         for sku in basket:
             sku2quant[sku] = sku2quant.get(sku, 0) + 1
         self._apply_free(sku2quant)
-        self._apply_groups(sku2quant)
+        groups_price = self._apply_groups(sku2quant)
         try:
-            return sum(
+            ungrouped_price = sum(
                 self.get_item_price(sku, quantity)
                 for sku, quantity in sku2quant.items()
             )
         except ValueError:
             return -1
-
-
-
-
+        else:
+            return groups_price + ungrouped_price
